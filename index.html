@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8" />
+    <title>Combine Logs.tf</title>
+    <link
+      href="https://unpkg.com/tailwindcss@1.1.2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="container mx-auto px-2 py-10 bg-gray-100 text-gray-800">
+    <h1 class="mb-8 text-4xl">
+      Combine Logs.tf
+    </h1>
+
+    <p class="mb-2 text-xl">
+      Paste below the URLs or IDs of logs you'd like to combine
+    </p>
+
+    <textarea
+      id="input"
+      class="w-full mb-4 p-2 bg-gray-300 font-mono"
+      rows="10"
+    ></textarea>
+
+    <p id="log" class="mb-2 font-mono"></p>
+
+    <p id="error" class="mb-2 text-red-500 font-semibold"></p>
+
+    <div id="downloads" class="mb-2"></div>
+
+    <button
+      id="process"
+      class="my-4 p-2 border rounded bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold uppercase"
+    >
+      Process
+    </button>
+
+    <footer
+      class="my-4 flex justify-between text-xs font-bold uppercase text-gray-500"
+    >
+      <a
+        href="https://github.com/ldesgoui/combine-logs-js"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Source
+      </a>
+
+      <a href="https://tf.gg/53683" target="_blank" rel="noopener noreferrer">
+        Thread
+      </a>
+
+      <a href="https://logs.tf" target="_blank" rel="noopener noreferrer">
+        logs.tf
+      </a>
+
+      <a href="https://tf.gg/46848" target="_blank" rel="noopener noreferrer">
+        Sharky's
+      </a>
+
+      <a href="https://tf.gg/31373" target="_blank" rel="noopener noreferrer">
+        Spyro's
+      </a>
+    </footer>
+
+    <script src="https://unpkg.com/jszip@3.2.2/dist/jszip.min.js"></script>
+    <script>
+      (() => {
+        const re = /\d+/g;
+        const inputEl = document.getElementById("input");
+        const processEl = document.getElementById("process");
+        const downloadsEl = document.getElementById("downloads");
+        const logEl = document.getElementById("log");
+        const errorEl = document.getElementById("error");
+
+        processEl.addEventListener("click", async ev => {
+          logEl.innerText = "";
+          errorEl.innerText = "";
+
+          const ids = inputEl.value.match(re) || [];
+
+          if (ids.length < 2) {
+            errorEl.innerText =
+              "Input contains less than 2 logs.tf IDs, cannot continue";
+            return;
+          }
+
+          logEl.innerText += `Processing: ${ids.join(", ")}\n`;
+
+          let output = "";
+
+          for (let id of []) {
+            logEl.innerText += `Log #${id}:\n`;
+
+            logEl.innerText += `- Downloading zip\n`;
+            let resp = await fetch(
+              `https://cors-anywhere.herokuapp.com/https://logs.tf/logs/log_${id}.log.zip`
+            );
+
+            if (!resp.ok) {
+              errorEl.innerText = `Download ${id} failed: ${resp.statusText}`;
+              return;
+            }
+
+            logEl.innerText += `- Reading zip\n`;
+            let zip = await JSZip.loadAsync(resp.blob());
+
+            logEl.innerText += `- Unzipping\n`;
+            let contents = await zip.file(`log_${id}.log`).async("string");
+
+            logEl.innerText += `- Merging contents\n`;
+            output += contents;
+          }
+
+          let download = document.createElement("a");
+
+          download.setAttribute(
+            "href",
+            "data:text/plain;charset=utf-8," + encodeURIComponent(output)
+          );
+          download.setAttribute("download", `combined_${ids.join("_")}.log`);
+          download.setAttribute(
+            "class",
+            "inline-block mr-2 p-2 border rounded bg-green-200"
+          );
+          download.innerText = `Download ${ids.join(" + ")}`;
+
+          downloadsEl.appendChild(download);
+
+          logEl.innerText += `Successfully processed`;
+        });
+      })();
+    </script>
+  </body>
+</html>
