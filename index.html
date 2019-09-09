@@ -59,7 +59,7 @@
       >
         Source
       </a>
-     
+
       <a href="." download="combine-logs.html">
         Copy
       </a>
@@ -84,7 +84,7 @@
     <script src="https://unpkg.com/jszip@3.2.2/dist/jszip.min.js"></script>
     <script>
       (() => {
-        const re = /\d+/g;
+        const re = /(\d+)(?:#\d+)?/g;
         const inputEl = document.getElementById("input");
         const processEl = document.getElementById("process");
         const downloadsEl = document.getElementById("downloads");
@@ -95,7 +95,7 @@
           logEl.innerText = "";
           errorEl.innerText = "";
 
-          const ids = inputEl.value.match(re) || [];
+          const ids = [...inputEl.value.matchAll(re) || []].map(match => match[1]);
 
           if (ids.length < 2) {
             errorEl.innerText =
