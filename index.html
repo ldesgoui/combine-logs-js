@@ -26,18 +26,18 @@
 
     <p id="log" class="mb-2 font-mono"></p>
 
-    <p id="error" class="mb-2 text-red-500 font-semibold"></p>
+    <p id="error" class="mb-4 text-red-500 font-semibold"></p>
 
-    <div id="downloads" class="mb-2"></div>
+    <div id="downloads" class="mb-4"></div>
 
     <button
       id="process"
-      class="my-4 p-2 border rounded bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold uppercase"
+      class="mb-4 p-2 border rounded bg-gray-200 hover:bg-gray-300 hover:shadow text-gray-700 font-bold uppercase"
     >
       Process
     </button>
 
-    <p class="mb-2 text-gray-600">
+    <p class="mb-10 text-gray-600">
       Once completed, download the log file and
       <a
         class="text-blue-600 underline"
@@ -50,35 +50,62 @@
     </p>
 
     <footer
-      class="my-4 flex justify-between text-xs font-bold uppercase text-gray-500"
+      class="text-xs font-bold uppercase text-gray-500"
     >
-      <a
-        href="https://github.com/ldesgoui/combine-logs-js"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Source
-      </a>
+      <div class="mb-4 flex justify-between">
+        <a
+          href="https://github.com/ldesgoui/combine-logs-js"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Source
+        </a>
 
-      <a href="." download="combine-logs.html">
-        Copy
-      </a>
+        <a id="copy" href="." download="combine-logs.html">
+          Copy
+        </a>
 
-      <a href="https://tf.gg/53683" target="_blank" rel="noopener noreferrer">
-        Thread
-      </a>
+        <a href="https://tf.gg/53683" target="_blank" rel="noopener noreferrer">
+          Thread
+        </a>
+      </div>
 
-      <a href="https://logs.tf" target="_blank" rel="noopener noreferrer">
-        logs.tf
-      </a>
+      <div class="mb-10 flex justify-between">
+        <a href="https://logs.tf" target="_blank" rel="noopener noreferrer">
+          logs.tf
+        </a>
 
-      <a href="https://tf.gg/46848" target="_blank" rel="noopener noreferrer">
-        Sharky's
-      </a>
+        <a href="https://tf.gg/46848" target="_blank" rel="noopener noreferrer">
+          Sharky's
+        </a>
 
-      <a href="https://tf.gg/31373" target="_blank" rel="noopener noreferrer">
-        Spyro's
-      </a>
+        <a href="https://tf.gg/31373" target="_blank" rel="noopener noreferrer">
+          Spyro's
+        </a>
+      </div>
+
+      <pre class="whitespace-pre-line font-normal">
+        Copyright (C) 2019 ldesgoui
+
+        Permission is hereby granted, free of charge, to any person obtaining
+        a copy of this software and associated documentation files (the
+        "Software"), to deal in the Software without restriction, including
+        without limitation the rights to use, copy, modify, merge, publish,
+        distribute, sublicense, and/or sell copies of the Software, and to
+        permit persons to whom the Software is furnished to do so, subject to
+        the following conditions:
+
+        The above copyright notice and this permission notice shall be
+        included in all copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+        EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+        MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+        NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+        LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+        OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+        WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+      </pre>
     </footer>
 
     <script src="https://unpkg.com/jszip@3.2.2/dist/jszip.min.js"></script>
@@ -90,6 +117,9 @@
         const downloadsEl = document.getElementById("downloads");
         const logEl = document.getElementById("log");
         const errorEl = document.getElementById("error");
+        const copyEl = document.getElementById("copy");
+
+        copyEl.setAttribute("href", location.href);
 
         processEl.addEventListener("click", async ev => {
           logEl.innerText = "";
