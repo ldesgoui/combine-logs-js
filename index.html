@@ -164,7 +164,9 @@
 
           download.setAttribute(
             "href",
-            "data:text/plain;charset=utf-8," + encodeURIComponent(output)
+            URL.createObjectURL(
+                new Blob([output], { type: "application/octet-stream" })
+            ),
           );
           download.setAttribute("download", `combined_${ids.join("_")}.log`);
           download.setAttribute(
