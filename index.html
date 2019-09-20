@@ -24,11 +24,7 @@
       rows="10"
     ></textarea>
 
-    <p id="log" class="mb-2 font-mono"></p>
-
     <p id="error" class="mb-4 text-red-500 font-semibold"></p>
-
-    <div id="downloads" class="mb-4"></div>
 
     <button
       id="process"
@@ -36,6 +32,8 @@
     >
       Process
     </button>
+
+    <div id="downloads" class="-mx-2 mb-4"></div>
 
     <p class="mb-10 text-gray-600">
       Once completed, download the log file and
@@ -115,14 +113,12 @@
         const inputEl = document.getElementById("input");
         const processEl = document.getElementById("process");
         const downloadsEl = document.getElementById("downloads");
-        const logEl = document.getElementById("log");
         const errorEl = document.getElementById("error");
         const copyEl = document.getElementById("copy");
 
         copyEl.setAttribute("href", location.href);
 
         processEl.addEventListener("click", async ev => {
-          logEl.innerText = "";
           errorEl.innerText = "";
 
           const ids = [...inputEl.value.matchAll(re) || []].map(match => match[1]);
@@ -133,51 +129,53 @@
             return;
           }
 
-          logEl.innerText += `Processing: ${ids.join(", ")}\n`;
+          const download = document.createElement("a");
 
-          let output = "";
+          download.setAttribute(
+            "class",
+            "inline-block m-2 p-2 border rounded bg-gray-200"
+          );
 
-          for (let id of ids) {
-            logEl.innerText += `Log #${id}:\n`;
+          downloadsEl.appendChild(download);
 
-            logEl.innerText += `- Downloading zip\n`;
-            let resp = await fetch(
+          const promises = Promise.all(ids.map(async id => {
+            const log = document.createElement("p")
+            log.innerText = `${id} downloading`
+
+            download.appendChild(log)
+
+            const resp = await fetch(
               `https://cors-anywhere.herokuapp.com/https://logs.tf/logs/log_${id}.log.zip`
             );
 
             if (!resp.ok) {
-              errorEl.innerText = `Download ${id} failed: ${resp.statusText}`;
-              return;
+              log.innerText = `${id} failed: ${resp.statusText}`;
+              return "";
             }
 
-            logEl.innerText += `- Reading zip\n`;
-            let zip = await JSZip.loadAsync(resp.blob());
+            log.innerText = `${id} unzipping`
+            const zip = await JSZip.loadAsync(resp.blob());
 
-            logEl.innerText += `- Unzipping\n`;
-            let contents = await zip.file(`log_${id}.log`).async("string");
+            log.innerText = `${id} processing`
+            const out = await zip.file(`log_${id}.log`).async("string");
 
-            logEl.innerText += `- Merging contents\n`;
-            output += contents;
-          }
+            log.innerText = id
+            return out
+          }))
 
-          let download = document.createElement("a");
+          const output = new Blob(await promises, { type: "application/octet-stream" })
 
           download.setAttribute(
             "href",
-            URL.createObjectURL(
-                new Blob([output], { type: "application/octet-stream" })
-            ),
+            URL.createObjectURL(output),
           );
           download.setAttribute("download", `combined_${ids.join("_")}.log`);
-          download.setAttribute(
-            "class",
-            "inline-block mr-2 p-2 border rounded bg-green-200"
-          );
-          download.innerText = `Download ${ids.join(" + ")}`;
+          download.classList.add("bg-green-200")
+          download.classList.remove("bg-gray-200")
 
-          downloadsEl.appendChild(download);
-
-          logEl.innerText += `Successfully processed`;
+          const label = document.createElement("p")
+          label.innerText = "Download"
+          download.appendChild(label)
         });
       })();
     </script>
