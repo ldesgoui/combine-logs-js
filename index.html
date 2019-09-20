@@ -144,9 +144,7 @@
 
             download.appendChild(log)
 
-            const resp = await fetch(
-              `https://cors-anywhere.herokuapp.com/https://logs.tf/logs/log_${id}.log.zip`
-            );
+            const resp = await fetch(`https://logs.tf/logs/log_${id}.log.zip`);
 
             if (!resp.ok) {
               log.innerText = `${id} failed: ${resp.statusText}`;
