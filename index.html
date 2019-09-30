@@ -59,8 +59,8 @@
           Source
         </a>
 
-        <a id="copy" href="." download="combine-logs.html">
-          Copy
+        <a id="clone" href="." download="ce_playeraliases_etf2l.html">
+          Clone
         </a>
 
         <a href="https://tf.gg/53683" target="_blank" rel="noopener noreferrer">
@@ -114,9 +114,9 @@
         const processEl = document.getElementById("process");
         const downloadsEl = document.getElementById("downloads");
         const errorEl = document.getElementById("error");
-        const copyEl = document.getElementById("copy");
+        const cloneEl = document.getElementById("clone");
 
-        copyEl.setAttribute("href", location.href);
+        cloneEl.setAttribute("href", location.href);
 
         processEl.addEventListener("click", async ev => {
           errorEl.innerText = "";
